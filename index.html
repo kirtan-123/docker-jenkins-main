@@ -200,6 +200,68 @@
 		font-size: 0.85rem;
 	}
 
+	.success {
+		margin-top: 14px;
+		padding: 10px 12px;
+		border-radius: 10px;
+		background: #ecfdf3;
+		border: 1px solid #86efac;
+		color: #166534;
+		font-size: 0.9rem;
+	}
+
+	.student-form {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 12px;
+	}
+
+	.student-form .full {
+		grid-column: 1 / -1;
+	}
+
+	.field {
+		display: grid;
+		gap: 6px;
+		font-size: 0.88rem;
+		color: var(--muted);
+	}
+
+	.field input,
+	.field select {
+		border: 1px solid #d1d5db;
+		border-radius: 10px;
+		padding: 10px;
+		font-size: 0.92rem;
+		background: #ffffff;
+	}
+
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.9rem;
+	}
+
+	th,
+	td {
+		text-align: left;
+		padding: 10px 8px;
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+	th {
+		color: var(--muted);
+		font-weight: 600;
+	}
+
+	.empty {
+		margin: 0;
+		padding: 10px;
+		border: 1px dashed #cbd5e1;
+		border-radius: 10px;
+		color: var(--muted);
+	}
+
 	@keyframes fadeUp {
 		from {
 			opacity: 0;
@@ -229,6 +291,10 @@
 		.hero {
 			padding: 20px;
 		}
+
+		.student-form {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>
 </head>
@@ -240,6 +306,10 @@
 				Track attendance, assignments, exam schedules, and class updates in one place.
 				This page is served by your Flask app and ready for Jenkins + Docker deployment.
 			</p>
+
+			{% if saved %}
+			<div class="success">Student details saved successfully.</div>
+			{% endif %}
 
 			<div class="quick-stats">
 				<article class="stat">
@@ -295,23 +365,85 @@
 			</article>
 
 			<article class="card">
-				<h2>Today's Tasks</h2>
-				<ul class="todo">
-					<li>Submit DBMS assignment before 11:59 PM</li>
-					<li>Review chapter 6 for Mathematics quiz</li>
-					<li>Join placement training session at 4:30 PM</li>
-					<li>Update internship profile and resume</li>
-				</ul>
-
-				<div class="cta">
-					<button class="btn primary">View Full Schedule</button>
-					<button class="btn secondary">Download Notes</button>
-				</div>
+				<h2>Add Student Details</h2>
+				<form class="student-form" method="post" action="/students">
+					<label class="field full">
+						Full Name
+						<input type="text" name="name" required>
+					</label>
+					<label class="field">
+						Email
+						<input type="email" name="email" required>
+					</label>
+					<label class="field">
+						Phone
+						<input type="text" name="phone" required>
+					</label>
+					<label class="field">
+						Department
+						<select name="department" required>
+							<option value="">Select department</option>
+							<option>Computer Science</option>
+							<option>Information Technology</option>
+							<option>Electronics</option>
+							<option>Mechanical</option>
+							<option>Civil</option>
+						</select>
+					</label>
+					<label class="field">
+						Semester
+						<select name="semester" required>
+							<option value="">Select semester</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+							<option>7</option>
+							<option>8</option>
+						</select>
+					</label>
+					<div class="cta full">
+						<button class="btn primary" type="submit">Save Student</button>
+						<button class="btn secondary" type="reset">Clear Form</button>
+					</div>
+				</form>
 
 				<p class="footer-note">
-					Tip: Keep your attendance above 85% to avoid exam eligibility issues.
+					Tip: Keep student profiles accurate to avoid communication issues.
 				</p>
 			</article>
+		</section>
+
+		<section class="card" style="margin-top: 18px;">
+			<h2>Recently Added Students</h2>
+			{% if students %}
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Phone</th>
+						<th>Department</th>
+						<th>Semester</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for student in students %}
+					<tr>
+						<td>{{ student["name"] }}</td>
+						<td>{{ student["email"] }}</td>
+						<td>{{ student["phone"] }}</td>
+						<td>{{ student["department"] }}</td>
+						<td>{{ student["semester"] }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			{% else %}
+			<p class="empty">No students saved yet. Add one using the form above.</p>
+			{% endif %}
 		</section>
 	</main>
 </body>
