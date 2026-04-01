@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Flask, send_file
 
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Hello Students! Flask App Running Successfully"
+    return send_file("index.html")
 
 @app.route("/about")
 def about():
